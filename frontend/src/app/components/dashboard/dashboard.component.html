@@ -1,0 +1,46 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>🌱 Sistema de Irrigação Inteligente</h1>
+    <button class="btn-evaluate" (click)="evaluateNow()" [disabled]="loading">
+      {{ loading ? 'Processando...' : 'Forçar Reavaliação de Clima 🌤️' }}
+    </button>
+  </header>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading && !error" class="loading-state">
+    <div class="spinner"></div>
+    <p>Carregando informações...</p>
+  </div>
+
+  <main *ngIf="!loading && !error" class="cards-grid">
+    <div *ngIf="plantations.length === 0" class="empty-state">
+      <p>Nenhuma horta cadastrada. Cadastre uma nova horta para começar.</p>
+    </div>
+
+    <!-- Cards de Plantações -->
+    <div 
+      class="plantation-card" 
+      *ngFor="let plant of plantations"
+      [ngClass]="{'status-active': plant.status === 'ACTIVE', 'status-paused': plant.status === 'PAUSED'}"
+    >
+      <div class="card-header">
+        <h2>{{ plant.name }}</h2>
+        <span class="badge" [ngClass]="plant.status === 'ACTIVE' ? 'badge-active' : 'badge-paused'">
+          {{ plant.status === 'ACTIVE' ? '💧 ATIVO' : '⏸️ PAUSADO (Chuva)' }}
+        </span>
+      </div>
+      
+      <div class="card-body">
+        <p><strong>Cultura:</strong> {{ plant.cropType }}</p>
+        <p><strong>Lat:</strong> {{ plant.latitude }} | <strong>Lng:</strong> {{ plant.longitude }}</p>
+      </div>
+      
+      <div class="card-footer">
+        <small>Última atualização: {{ plant.updatedAt | date:'short' }}</small>
+      </div>
+    </div>
+  </main>
+</div>
