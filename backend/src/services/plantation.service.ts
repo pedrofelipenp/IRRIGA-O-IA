@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { Plantation, IrrigationStatus } from '../entities/plantation.entity';
 import { IrrigationLog } from '../entities/irrigation-log.entity';
 import { WeatherService } from './weather.service';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class PlantationService {
@@ -23,19 +22,25 @@ export class PlantationService {
     return await this.plantationRepository.save(newPlantation);
   }
 
-  async findAll(): Promise<Plantation[]> {
-    return await this.plantationRepository.find();
+  async findAll(page: number = 1, limit: number = 10): Promise<{ data: Plantation[], total: number }> {
+    const [data, total] = await this.plantationRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+    return { data, total };
   }
 
   /**
-   * Função executada via Cron Job a cada 1 hora para avaliar e atualizar os status de rega.
+   * Função executada para avaliar e atualizar os status de rega.
    */
-  @Cron(CronExpression.EVERY_HOUR)
   async evaluateIrrigationNeeds() {
     this.logger.log('Iniciando avaliação de necessidade de irrigação para todas as hortas...');
-    const plantations = await this.findAll();
+    
+    // Pegando as hortas paginadas (neste caso, as primeiras 1000 para o cron)
+    const result = await this.findAll(1, 1000);
 
-    for (const plantation of plantations) {
+    for (const plantation of result.data) {
       const shouldIrrigate = await this.weatherService.shouldIrrigate({
         lat: plantation.latitude,
         lon: plantation.longitude,

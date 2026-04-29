@@ -29,8 +29,8 @@ export class PlantationService {
 
   constructor(private http: HttpClient) {}
 
-  getPlantations(): Observable<Plantation[]> {
-    return this.http.get<Plantation[]>(this.API_URL);
+  getPlantations(page: number = 1, limit: number = 50): Observable<{data: Plantation[], total: number}> {
+    return this.http.get<{data: Plantation[], total: number}>(`${this.API_URL}?page=${page}&limit=${limit}`);
   }
 
   createPlantation(data: CreatePlantationDto): Observable<Plantation> {

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CacheModule } from '@nestjs/cache-manager';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PlantationModule } from './modules/plantation.module';
@@ -11,6 +12,10 @@ import { IrrigationLog } from './entities/irrigation-log.entity';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // Disponibiliza o .env em toda a aplicação
+    }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 1800000, // 30 minutos em milissegundos
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

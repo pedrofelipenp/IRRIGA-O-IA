@@ -8,6 +8,7 @@ import { IrrigationLog } from '../entities/irrigation-log.entity';
 import { PlantationService } from '../services/plantation.service';
 import { WeatherService } from '../services/weather.service';
 import { PlantationController } from '../controllers/plantation.controller';
+import { IrrigationSchedulerService } from '../services/irrigation-scheduler.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { PlantationController } from '../controllers/plantation.controller';
     ScheduleModule.forRoot(), // Importante para o Cron Job
   ],
   controllers: [PlantationController],
-  providers: [PlantationService, WeatherService],
+  providers: [PlantationService, WeatherService, IrrigationSchedulerService],
   exports: [PlantationService], // Exportado caso precise ser usado em outros módulos
 })
 export class PlantationModule {}

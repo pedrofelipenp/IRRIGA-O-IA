@@ -23,8 +23,8 @@ export class DashboardComponent implements OnInit {
   loadPlantations(): void {
     this.loading = true;
     this.plantationService.getPlantations().subscribe({
-      next: (data) => {
-        this.plantations = data;
+      next: (response) => {
+        this.plantations = response.data;
         this.loading = false;
       },
       error: (err) => {

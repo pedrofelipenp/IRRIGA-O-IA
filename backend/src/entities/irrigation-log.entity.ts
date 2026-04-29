@@ -11,10 +11,10 @@ export class IrrigationLog {
   @JoinColumn({ name: 'plantation_id' })
   plantation: Plantation;
 
-  @Column({ type: 'enum', enum: IrrigationStatus })
+  @Column({ type: 'enum', enum: ['ACTIVE', 'PAUSED'] })
   previousStatus: IrrigationStatus;
 
-  @Column({ type: 'enum', enum: IrrigationStatus })
+  @Column({ type: 'enum', enum: ['ACTIVE', 'PAUSED'] })
   newStatus: IrrigationStatus;
 
   @Column({ type: 'text' })
